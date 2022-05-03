@@ -1,0 +1,166 @@
+#:kivy 2.1.0
+
+<NumInput@MyTextInput>:
+    size: 50 , 70
+    font_size: 60
+    input_filter: 'int'
+    multiline: False
+    padding_y: [self.height / 2.0 - (self.line_height / 2.0) * len(self._lines), 0]
+
+<Field>:
+    id: 'field'
+    canvas.before:
+        Color:
+            rgba: (0, 1, 1, 1)
+        Line:
+            points: root.width / 2 - 115, root.top - 165, root.width / 2 - 70, root.top - 115
+            width: 2
+            cap: 'square'
+        Line:
+            points: root.width / 2 - 115, root.top - 115, root.width / 2 - 70, root.top - 165
+            width: 2
+            cap: 'square'
+        Line:
+            points: root.width / 2 - 110, root.top - 230, root.width / 2 + 75, root.top - 230
+            width: 3
+            cap: 'square'
+        Line:
+            points: root.width / 2 - 170, root.top - 395, root.width / 2 + 75, root.top - 395
+            width: 3
+            cap: 'square'
+        Line:
+            points: root.width / 2 - 190, root.top - 305, root.width / 2 - 250, root.top - 305
+            width: 2
+        Line:
+            points: root.width / 2 - 220, root.top - 335, root.width / 2 - 220, root.top - 275
+            width: 2
+            cap: 'square'
+
+    Label:
+        font_size: 100
+        center_x: root.width / 2
+        top: root.top - 50
+        text: str(root.factor1)
+
+    Label:
+        font_size: 100
+        center_x: root.width / 2
+        top: root.top - 130
+        text: str(root.factor2)
+
+    Label:
+        font_size: 18
+        center_x: root.width / 6
+        top: root.top
+        text: f'Решено примеров:  {root.count}'
+
+    Label:
+        font_size: 18
+        center_x: root.width / 7.8
+        top: root.top - 30
+        text: f'Подсказок:  {root.hint}'
+
+    NumInput:
+        id: a
+        center_x: root.width / 2 + 30
+        top: root.top - 240
+
+    NumInput:
+        id: b
+        center_x: root.width / 2 - 25
+        top: root.top - 240
+
+    NumInput:
+        id: c
+        center_x: root.width / 2 - 80
+        top: root.top - 240
+
+    NumInput:
+        id: d
+        center_x: root.width / 2 - 25
+        top: root.top - 315
+
+    NumInput:
+        id: e
+        center_x: root.width / 2 - 80
+        top: root.top - 315
+
+    NumInput:
+        id: f
+        center_x: root.width / 2 - 135
+        top: root.top - 315
+
+    NumInput:
+        id: g
+        center_x: root.width / 2 + 30
+        top: root.top - 405
+        on_text: root.on_text(4, self.text)
+
+    NumInput:
+        id: h
+        center_x: root.width / 2 - 25
+        top: root.top - 405
+        on_text: root.on_text(3, self.text)
+
+    NumInput:
+        id: i
+        center_x: root.width / 2 - 80
+        top: root.top - 405
+        on_text: root.on_text(2, self.text)
+
+    NumInput:
+        id: j
+        center_x: root.width / 2 - 135
+        top: root.top - 405
+        on_text: root.on_text(1, self.text)
+
+    Button:
+        text: 'NEXT'
+        pos: 460, 50
+        size: 100, 40
+        font_size: 20
+        outline_color: 'black'
+        outline_width: 2
+        background_color: 133/255, 174/255, 196/255, 1
+        on_press: root.next()
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Line:
+                width: 1.2
+                rectangle: self.x, self.y, self.width, self.height
+    Button:
+        id: 'button_next'
+        text: 'ПОДСКАЗКА'
+        pos: 620, 500
+        size: 140, 50
+        font_size: 20
+        outline_color: 'black'
+        outline_width: 2
+        background_color: 133/255, 174/255, 196/255, 1
+        on_press: root.popup()
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Line:
+                width: 1.2
+                rectangle: self.x, self.y, self.width, self.height
+
+
+<Finish>:
+    canvas.before:
+        Color:
+            rgba: .255, .99, .71, 1
+        Rectangle:
+            pos: 100, 45
+            size: 600, 515
+    Button:
+        text: 'ЕЩЁ РАЗ'
+        pos: 450, 70
+        size_hint: 2, .5
+        on_press: root.parent.remove_widget(root)
+    Button:
+        text: 'ЗАВЕРШИТЬ'
+        pos: 150, 70
+        size_hint: 2, .5
+        on_press: app.stop()
