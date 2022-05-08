@@ -25,6 +25,13 @@ def helping(str1, str2):
     return lst
 
 
+def solve_time(t1, t2):
+    t = int(t1 - t2)
+    minutes = str(t // 60) if len(str(t // 60)) == 2 else '0' + str(t // 60)
+    seconds = str(t % 60) if len(str(t % 60)) == 2 else '0' + str(t % 60)
+    return minutes + ':' + seconds
+
+
 class Field(Widget):
 
     factor1 = NumericProperty(random.randint(10, 99))
@@ -32,8 +39,10 @@ class Field(Widget):
     count = NumericProperty(0)
     hint = NumericProperty(0)
     num = {}
+    t = time.time()
 
     def next(self):
+        print(self.t, 'before')
         answer = self.factor1 * self.factor2
         solve = solution(self.num)
         for i in 'abcdefghij':
@@ -42,7 +51,7 @@ class Field(Widget):
             self.count += 1
             if self.count == 1:
                 text = f'Ваш результат: \n\nПримеров решено _______________ {self.count}\nПодсказок использовано ' \
-                       f'_______ {self.hint}\nВремя решения ______________ 00:00'
+                       f'_______ {self.hint}\nВремя решения _____________ {solve_time(time.time(), self.t)}'
                 finish = Finish()
                 finish.add_widget(Label(text=text, pos=(340, 350), font_size=30, bold=True, outline_color='black',
                                         outline_width=1))
@@ -52,6 +61,8 @@ class Field(Widget):
             self.factor1 = random.randint(10, 99)
             self.factor2 = random.randint(10, 99)
         self.num = {}
+        self.t = time.time()
+        print(self.t, 'after')
 
     def on_text(self, key, value):
         self.num[key] = value if value else '0'
@@ -72,7 +83,7 @@ class Field(Widget):
 
 class Finish(FloatLayout):
     """
-
+    Show the results of exercise
     """
     pass
 
