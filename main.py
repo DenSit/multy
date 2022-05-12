@@ -7,67 +7,59 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+from outfunc import solution, helping, solve_time
 import random
 import time
 
 
-def solution(dic, word=''):
-    for i in range(1, 5):
-        word += dic.get(i, '0')
-    return int(word)
-
-
-def helping(str1, str2):
-    lst = []
-    for i in str2[::-1]:
-        for j in str1[::-1]:
-            lst.append(f'{i} х {j} = {int(i) * int(j)}')
-    return lst
-
-
-def solve_time(t1, t2):
-    t = int(t1 - t2)
-    minutes = str(t // 60) if len(str(t // 60)) == 2 else '0' + str(t // 60)
-    seconds = str(t % 60) if len(str(t % 60)) == 2 else '0' + str(t % 60)
-    return minutes + ':' + seconds
-
-
 class Field(Widget):
+    """
+    field where other widgets are
+    """
 
     factor1 = NumericProperty(random.randint(10, 99))
     factor2 = NumericProperty(random.randint(10, 99))
-    count = NumericProperty(0)
-    hint = NumericProperty(0)
-    num = {}
+    count = NumericProperty(0)                          # count of solved problems
+    hint = NumericProperty(0)                           # count of used hints
+    num = {}                                            # inputted digits
     t = time.time()
 
     def next(self):
-        print(self.t, 'before')
+        """
+        solve processing and creating a final result table
+        """
         answer = self.factor1 * self.factor2
         solve = solution(self.num)
         for i in 'abcdefghij':
             exec(f'self.ids.{i}.text = ""')   # clearing textinput cells
         if answer == solve:
             self.count += 1
-            if self.count == 1:
+            if self.count == 5:
                 text = f'Ваш результат: \n\nПримеров решено _______________ {self.count}\nПодсказок использовано ' \
                        f'_______ {self.hint}\nВремя решения _____________ {solve_time(time.time(), self.t)}'
                 finish = Finish()
-                finish.add_widget(Label(text=text, pos=(340, 350), font_size=30, bold=True, outline_color='black',
-                                        outline_width=1))
+                finish.add_widget(Label(text=text, pos=(340, 350), font_size=30, bold=True,
+                                        outline_color='black', outline_width=1))
                 self.add_widget(finish)
                 self.count = 0
                 self.hint = 0
             self.factor1 = random.randint(10, 99)
             self.factor2 = random.randint(10, 99)
+            self.t = time.time()
         self.num = {}
-        self.t = time.time()
-        print(self.t, 'after')
 
     def on_text(self, key, value):
+        """
+        reading answer from textinput fields
+        :param key: textinput sequence number
+        :param value: digit
+        """
         self.num[key] = value if value else '0'
 
     def popup(self):
+        """
+        hints from the multiplication table
+        """
         self.hint += 1
         lst = helping(str(self.factor1), str(self.factor2))
         content = BoxLayout(orientation='vertical', padding=15, spacing=30)
@@ -80,6 +72,9 @@ class Field(Widget):
         but.bind(on_release=popup.dismiss)
         popup.open()
 
+    def change_time(self):
+        self.t = time.time()
+
 
 class Finish(FloatLayout):
     """
@@ -90,7 +85,7 @@ class Finish(FloatLayout):
 
 class MyTextInput(TextInput):
     """
-    redefinition the class TextInput to constrain input text by one symbol
+    redefinition the class TextInput to constrain input text with one symbol
     """
     def insert_text(self, substring, from_undo=False):
         if len(self.text) > 0:
